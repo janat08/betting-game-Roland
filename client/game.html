@@ -1,0 +1,10 @@
+<template name="game">
+    <button class="bet">bet</button>
+    bets:{{bets}}
+    balance: {{balance}}
+    pot:{{pot}}
+    eligible: {{#if eligibility}} <span style="color:green">YE</span> {{else}} <span style="color:red">NO</span> {{/if}}
+    bet amount: {{betAmount}}
+    time: <span id="time"></span><br/>
+    games: {{watcher}}
+</template>

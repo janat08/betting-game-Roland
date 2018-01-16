@@ -1,0 +1,18 @@
+
+<template name="forms">
+In order of appearance in upwork description within chat <br/>
+    {{#if Template.subscriptionsReady}}
+    {{#each forms}}
+    {{>fields}}
+    {{/each}}
+    {{else}}
+        Initializing
+        {{/if}}
+
+    <button class="forms">commit</button> <br/>
+    <button class="newGame">new game</button>
+</template>
+
+<template name="fields">
+{{data}}:<input class="{{data}} value" name={{data}} value={{value}} /> <br/>
+</template>

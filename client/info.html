@@ -1,0 +1,20 @@
+<template name="info">
+    <table>
+        <caption>Leaderboards</caption>
+        <thead>
+            <tr>
+                <th>mail</th>
+                <th>balance</th>
+                <th>bet</th>
+            </tr>
+        </thead>
+    {{#each users}}
+        <tr>
+            <td>{{{onlineBold online email}}}</td>
+            <td>{{balance}}</td>
+            <td>{{bet}}</td>
+        </tr>
+    {{/each}}
+    <tfoot>Online users first: {{onlineC}}</tfoot>
+    </table>
+</template>

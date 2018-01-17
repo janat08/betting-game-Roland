@@ -12,6 +12,13 @@ Template.forms.onCreated(function () {
 
 Template.forms.helpers({
     forms() {
+        if (Template.instance().subscriptionsReady()) {
+            var a = Config.findOne()
+            var b = Constants.map((x,i)=>{return {val: a[x], name: x}})
+            return b
+        } else {
+
+        }
         return Constants
     },
 });
@@ -24,7 +31,6 @@ Template.forms.events({
     },
     'click .forms'(event) {
     var a = Template.instance().values
-    console.log(a, "values")
         Meteor.call('configure', a);
     },
     "click .newGame"(event){
@@ -33,16 +39,7 @@ Template.forms.events({
 });
 
 Template.fields.helpers({
-    value() {
-        if (Template.instance().subscriptionsReady()) {
-            return Config.findOne()[Template.currentData()]
-        } else {
-            null
-        }
-    },
-    data() {
-        return Template.currentData()
-    }
+
 })
 
 Template.fields.events({

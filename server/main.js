@@ -20,15 +20,19 @@ Meteor.startup(function(){
 
 })
 
+Tracker.autorun(function(){
+    var a = Meteor.users.find({online: true}, {fields: {online: 1}}).count()
+    Config.update({}, {$set: {online: a}})
+})
+
 UserPresence.onUserOnline(function(connection){
-    Config.update({}, {$set: {online: Meteor.users.find({online: true}).count()}})
+    // Config.update({}, {$set: {online: Meteor.users.find({online: true}).count()}})
     Meteor.users.update({_id:connection}, {$set:{online:true}})
 
 });
 UserPresence.onUserOffline(function(connection){
-    Config.update({}, {$inc: {online: -10}})
-    console.log(connection)
-        Meteor.users.update({_id:connection}, {$set:{online:false}})
+    // Config.update({}, {$set: {online: Meteor.users.find({online: false}).count()}})
+    Meteor.users.update({_id:connection}, {$set:{online:false}})
 });
 
 UserPresence.onCleanup(function(){

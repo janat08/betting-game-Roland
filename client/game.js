@@ -4,20 +4,25 @@
 const hyperHTML = require('hyperhtml/cjs').default;
 
 
-var a
 Template.game.onCreated(function(){
     this.subscribe('games')
+    this.rec = new ReactiveVar()
     this.autorun(function(){
         if (Template.instance().subscriptionsReady()) {
-             var a = Games.findOne({}, {sort: {start: -1}, limit: 1})
-            Template.instance().currentGame = a
+             var a = Games.findOne({}, {sort: {start: -1},
+                 // fields: {_id: 1, deadline: 1}
+             })
+            Template.instance().currentId = a._id
+            Session.set("game", a)
+            console.log(Template.instance.rec)
             Session.set("deadLine", new Date(a.deadline))
         }
     })
+    console.log(this.rec)
 })
 
 Template.game.onRendered(function(){
-    a = document.querySelector('#time')
+    var a = document.querySelector('#time')
     setInterval(tick, 100,
         hyperHTML.bind(a)
     );
@@ -25,13 +30,12 @@ Template.game.onRendered(function(){
 
 Template.game.helpers({
     eligibility() {
-        var a = Games.findOne({}, {sort: {deadline: -1}})
+        var a = Template.instance.rec
         if (!a.bettors.length){
             return true
         }
         var arr = a.bettors
         var bettor = arr.find((user)=>user.userId==Meteor.userId())
-        console.log(arr, bettor)
         if (a.bottom>bettor.bet){
             return false
         }
@@ -41,26 +45,26 @@ Template.game.helpers({
         return true
     },
     pot(){
-        return Games.findOne({}, {sort: {start: -1}, limit: 1}).pot
+        return Session.get("game").pot
     },
     bets(){
-        return Games.findOne({}, {sort: {start: -1}, limit: 1}).bets
+        return Session.get("game").bets
     },
     betAmount() {
-        return Conf.betIncrement
+        return Config.findOne().betIncrement
     },
     balance() {
         return Meteor.user().balance
     },
     watcher(){
-        return JSON.stringify(Games.findOne({}, {sort: {start: -1}}))
+        return JSON.stringify(Session.get("game"))
     },
 
 });
 
 Template.game.events({
-    "click .bet"(event){
-        Meteor.call("bet", Template.instance().currentGame, function(error, res){
+    "click .bet"(event, temp){
+        Meteor.call("bet", temp.currentId, function(error, res){
             if (error){
                  return console.log(error.error)
                 // console.warn(error.error)
@@ -72,22 +76,13 @@ Template.game.events({
 });
 
 
-function watch() {
-    Timer = Meteor.setInterval(
-        function () {
-            Session.set("countDown", Math.trunc((Session.get("deadLine")-new Date())/100)/10)
-        }, 100
-    )
-}
-
 function tick(render) {
-    var b = Session.get("deadLine")
+    var a = Session.get('deadLine')
+    // console.log(a, Math.trunc((a-new Date())/100)/10)
     render`
     <span>
-      ${Math.trunc((b-new Date())/100)/10}
+      ${Math.trunc((a-new Date())/100)/10}
     </span>
   `;
 }
 
-//      <h2>It is ${Math.trunc((a-new Date())/100)/10}.</h2>
- // getElementById('time')

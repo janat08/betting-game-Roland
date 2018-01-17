@@ -30,16 +30,16 @@ Template.game.onRendered(function(){
 
 Template.game.helpers({
     eligibility() {
-        var a = Template.instance.rec
+        var a = Session.get('game')
         if (!a.bettors.length){
             return true
         }
         var arr = a.bettors
         var bettor = arr.find((user)=>user.userId==Meteor.userId())
-        if (a.bottom>bettor.bet){
+        if (a.bottom>=bettor.bet){
             return false
         }
-        if (a.top<bettor.bet){
+        if (a.top<=bettor.bet){
             return false
         }
         return true

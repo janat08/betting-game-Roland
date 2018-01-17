@@ -39,7 +39,7 @@ Template.game.helpers({
         if (a.bottom>=bettor.bet){
             return false
         }
-        if (a.top<=bettor.bet){
+        if (a.top<=bettor.date){
             return false
         }
         return true
@@ -55,6 +55,9 @@ Template.game.helpers({
     },
     balance() {
         return Meteor.user().balance
+    },
+    timer() {
+      return Config.findOne().timer
     },
     watcher(){
         return JSON.stringify(Session.get("game"))

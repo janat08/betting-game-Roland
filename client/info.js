@@ -10,30 +10,31 @@ Template.info.helpers({
             x.email = x.emails[0].address;
             return x
         })
-    return ab
-        //
-    //     var a = Session.get("game")
-    //         if (a == undefined){
-    //         return ab
-    //         }
-    //         var b=a.bettors
-    //         if (!b.length){
-    //             return ab
-    //         }
-    //
-    //
-    //     ab = ab.map((x)=>{
-    //             var c = b.find((x)=>x.userId==Meteor.userId());
-    //             if (c == undefined){
-    //                 return ab
-    //             }
-    //             x.bet = c.bet
-    //            x.date = a.start-Math.trunc((a.start-c.date)/100)/10
-    //         console.log(a.start-Math.trunc((a.start-c.date)/100)/10, Math.trunc((a.start-c.date)/100)/10)
-    //
-    //         })
-    //
-    //     return ab
+    // return ab
+
+        var a = Session.get("game")
+            if (a == undefined){
+            return ab
+            }
+            var b=a.bettors
+            if (!b.length){
+            ab = ab.map(x=>{x.date = undefined, x.bet = undefined; return x})
+                return ab
+            }
+            ab = ab.map((x)=>{
+                let c = undefined
+                c = b.find((y)=>{return y.userId==x._id});
+                if (c == undefined){
+                    return x
+                }
+                x.bet = c.bet
+               x.date = Math.trunc((c.date-a.start)/100)/10
+            console.log(a.start, c.date, c)
+                return x
+            }).sort((x,y)=>{
+                return y.date-x.date})
+    console.log(ab)
+        return ab
     },
     onlineBold(param, email){
         if (param == true){
